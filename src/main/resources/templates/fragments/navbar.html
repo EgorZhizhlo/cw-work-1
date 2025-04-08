@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="navbarFragment">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">Главная</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employees">Наши сотрудники</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/activities">Наши услуги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Об авторе</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <!-- Если пользователь авторизован, показываем кнопку "Личный кабинет" -->
+                    <li class="nav-item" th:if="${isAuthenticated}">
+                        <a class="nav-link" href="/account">Личный кабинет</a>
+                    </li>
+                    <!-- Если не авторизован, показываем кнопки "Вход" и "Регистрация" -->
+                    <li class="nav-item" th:if="${!isAuthenticated}">
+                        <a class="nav-link" href="/login">Вход</a>
+                    </li>
+                    <li class="nav-item" th:if="${!isAuthenticated}">
+                        <a class="nav-link" href="/registry">Регистрация</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

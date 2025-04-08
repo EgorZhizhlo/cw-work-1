@@ -1,0 +1,125 @@
+<!-- Файл: src/main/resources/templates/account.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой аккаунт</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .account-card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .account-header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .account-details {
+            padding: 20px;
+        }
+        .account-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+<!-- Подключение фрагмента шапки (navbar) -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<!-- Основной контент -->
+<div class="container my-5" style="min-height: 100vh">
+    <div class="text-center mb-5">
+        <h1>Мой аккаунт</h1>
+        <p class="lead">Просмотрите свою информацию</p>
+    </div>
+
+    <div th:if="${account != null}" class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card account-card shadow">
+                <div class="account-header">
+                    <h4 th:text="${account.surname} + ' ' + ${account.name} + ' ' + ${account.patronymic}">Фамилия Имя Отчество</h4>
+                </div>
+                <div class="card-body account-details">
+                    <!-- Отображение изображения пользователя -->
+                    <div class="text-center mb-3" th:if="${account.imageBase64 != null}">
+                        <img class="account-image"
+                             th:src="@{'data:image/jpeg;base64,' + ${account.imageBase64}}"
+                             alt="Фото пользователя">
+                    </div>
+                    <div class="text-center mb-3" th:if="${account.imageBase64 == null}">
+                        <img class="account-image" src="https://via.placeholder.com/150" alt="Фото пользователя">
+                    </div>
+
+                    <!-- Общие поля для всех пользователей -->
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>ID:</strong></div>
+                        <div class="col-sm-8" th:text="${account.id}">0</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>Фамилия:</strong></div>
+                        <div class="col-sm-8" th:text="${account.surname}">Фамилия</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>Имя:</strong></div>
+                        <div class="col-sm-8" th:text="${account.name}">Имя</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>Отчество:</strong></div>
+                        <div class="col-sm-8" th:text="${account.patronymic}">Отчество</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>Email:</strong></div>
+                        <div class="col-sm-8" th:text="${account.email}">email@example.com</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4"><strong>Телефон:</strong></div>
+                        <div class="col-sm-8" th:text="${account.phoneNumber}">+7 (000) 000-00-00</div>
+                    </div>
+
+                    <!-- Дополнительные поля для сотрудников (employee) -->
+                    <div th:if="${#strings.toLowerCase(account.statusName) == 'employee'}">
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Специализация:</strong></div>
+                            <div class="col-sm-8" th:text="${account.specialization}">Специализация</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Опыт работы:</strong></div>
+                            <div class="col-sm-8" th:text="${account.workExperience} + ' лет'">Опыт работы</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Доп. информация:</strong></div>
+                            <div class="col-sm-8" th:text="${account.additionalInfo}">Дополнительная информация</div>
+                        </div>
+                    </div>
+
+                    <!-- Кнопка "Расписание" -->
+                    <div class="d-grid gap-2 mt-4">
+                        <a class="btn btn-primary btn-lg" th:href="@{/schedule}">Расписание</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${account == null}">
+        <div class="alert alert-danger" role="alert">
+            Данные не найдены или пользователь не авторизован.
+        </div>
+    </div>
+</div>
+
+<!-- Подключение фрагмента подвала (footer) -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<!-- Bootstrap JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

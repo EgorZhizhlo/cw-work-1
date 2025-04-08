@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости спортивной школы</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Навигационная панель (фрагмент) -->
+<div th:replace="~{fragments/navbar :: navbarFragment}"></div>
+
+<!-- Основной контент -->
+<div class="container my-5" style="min-height: 100vh">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h1 class="mb-0 text-center">Об авторе</h1>
+        </div>
+        <div class="card-body">
+            <p>
+                Меня зовут <strong>Абдурахимов Амир Баходирович</strong>, я родился 20 августа 2005 года. Сейчас я являюсь студентом второго курса Финансового университета, обучаясь по направлению «Программная инженерия». Моё увлечение программированием зародилось ещё в школьные годы и с тех пор только крепнет.
+            </p>
+            <p>
+                Помимо учёбы, я работаю преподавателем информатики в частной IT-школе, где с радостью делюсь знаниями и опытом с молодыми людьми, желающими войти в мир информационных технологий. Преподавание для меня — это не просто работа, а возможность вдохновлять и мотивировать студентов на изучение программирования и смежных дисциплин.
+            </p>
+            <p>
+                В рамках данной курсовой работы я исследую тему «<em>Информационно-справочная система спортивной школы</em>». Надеюсь, что результаты моего исследования будут полезны не только для меня, но и для всех, кто интересуется данной областью.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Подключение фрагмента подвала (footer) -->
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
+
+<!-- Bootstrap JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

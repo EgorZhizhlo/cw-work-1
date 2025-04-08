@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${activity.id == null} ? 'Создать активность' : 'Редактировать активность'">Форма активности</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 th:text="${activity.id == null} ? 'Создать активность' : 'Редактировать активность'">Форма активности</h1>
+    <form th:action="@{${activity.id == null ? '/admin/activities/create' : '/admin/activities/update'}}"
+          th:object="${activity}"
+          method="post"
+          enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Изображение</label>
+            <input type="file" class="form-control" id="imageFile" name="imageFile">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Название</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}">
+        </div>
+        <div class="mb-3">
+            <label for="activityType" class="form-label">Тип активности</label>
+            <input type="text" class="form-control" id="activityType" th:field="*{activityType}">
+        </div>
+        <div class="mb-3">
+            <label for="maxPeople" class="form-label">Максимальное количество людей</label>
+            <input type="number" class="form-control" id="maxPeople" th:field="*{maxPeople}">
+        </div>
+        <div class="mb-3">
+            <label for="additionalInfo" class="form-label">Дополнительная информация</label>
+            <textarea class="form-control" id="additionalInfo" rows="4" th:field="*{additionalInfo}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Цена</label>
+            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}">
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a th:href="@{/admin/activities}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

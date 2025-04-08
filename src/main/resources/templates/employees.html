@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши сотрудники</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .employee-card {
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .employee-card:hover {
+            transform: scale(1.02);
+        }
+        .employee-img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .employee-info {
+            padding: 1rem;
+        }
+        .carousel-inner {
+            padding: 1rem;
+        }
+        .carousel-control-prev-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradPrev' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='10,2 6,8 10,14' fill='none' stroke='url(%23gradPrev)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+        .carousel-control-next-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradNext' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='6,2 10,8 6,14' fill='none' stroke='url(%23gradNext)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+<!-- Фрагмент навигационной панели -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<div class="container my-5" style="min-height: 100vh">
+    <h1 class="text-center mb-4">Наши сотрудники</h1>
+
+    <!-- Итерация по группам сотрудников по специализации -->
+    <div th:each="entry : ${groupedEmployeesChunks}"
+         th:with="carouselId=${#strings.replace(entry.key, ' ', '-')}" >
+        <!-- entry.key - специализация, entry.value - список чанков по 3 сотрудника -->
+        <h2 th:text="${entry.key}" class="mt-5 mb-3"></h2>
+
+        <!-- Используем th:id для формирования корректного id -->
+        <div th:id="'carousel-specialization-' + ${carouselId}"
+             class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Итерация по чанкам -->
+                <div th:each="chunk, chunkStat : ${entry.value}"
+                     th:classappend="${chunkStat.index == 0} ? ' active' : ''"
+                     class="carousel-item">
+                    <div class="row">
+                        <!-- Для каждого сотрудника в чанке -->
+                        <div class="col-md-4" th:each="employee : ${chunk}">
+                            <div class="employee-card"
+                                 th:onclick="|window.location.href='/employees/' + ${employee.id}|">
+                                <img th:src="@{'/employee/image/' + ${employee.id}}" alt="Фото сотрудника" class="employee-img">
+                                <div class="employee-info">
+                                    <h5 th:text="${employee.surname} + ' ' + ${employee.name} + ' ' + ${employee.patronymic}">ФИО</h5>
+                                    <p><strong>Специализация:</strong> <span th:text="${employee.specialization}">Специализация</span></p>
+                                    <p><strong>Опыт работы:</strong> <span th:text="${employee.workExperience}">Опыт</span> лет</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Элементы управления слайдером.
+                 Используем th:attr для формирования data-bs-target, чтобы он соответствовал id карусели -->
+            <button class="carousel-control-prev" type="button"
+                    th:attr="data-bs-target='#carousel-specialization-' + ${carouselId}"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Предыдущий</span>
+            </button>
+            <button class="carousel-control-next" type="button"
+                    th:attr="data-bs-target='#carousel-specialization-' + ${carouselId}"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Следующий</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Фрагмент подвала -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

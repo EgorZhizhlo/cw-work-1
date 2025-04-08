@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${employee.surname} + ' ' + ${employee.name}">Сотрудник</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .employee-detail-card {
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            background-color: #fff;
+        }
+        .employee-detail-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Фрагмент навигационной панели -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<div class="container my-5" style="min-height: 100vh">
+    <div class="employee-detail-card">
+        <img th:src="@{'/employee/image/' + ${employee.id}}" alt="Фото сотрудника" class="employee-detail-img mb-4">
+        <h1 th:text="${employee.surname} + ' ' + ${employee.name} + ' ' + ${employee.patronymic}">ФИО сотрудника</h1>
+        <p><strong>Специализация:</strong> <span th:text="${employee.specialization}">Специализация</span></p>
+        <p><strong>Опыт работы:</strong> <span th:text="${employee.workExperience}">Опыт</span> лет</p>
+        <hr>
+        <p th:text="${employee.additionalInfo}">Дополнительная информация о сотруднике</p>
+        <a href="/employees" class="btn btn-secondary mt-3">Вернуться к сотрудникам</a>
+    </div>
+</div>
+
+<!-- Фрагмент подвала -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

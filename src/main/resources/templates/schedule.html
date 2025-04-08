@@ -1,0 +1,52 @@
+<!-- Файл: src/main/resources/templates/schedule.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание занятий</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Подключение фрагмента шапки (navbar) с новой синтаксической обёрткой -->
+<div th:replace="~{fragments/navbar :: navbarFragment}"></div>
+
+<div class="container mt-4" style="min-height: 100vh">
+    <h1 class="mb-4">Расписание занятий</h1>
+    <!-- Используем !#lists.isEmpty(scheduleList) для проверки непустого списка -->
+    <div th:if="${scheduleList != null and !#lists.isEmpty(scheduleList)}">
+        <table class="table table-bordered">
+            <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Дата и время</th>
+                <th>Активность</th>
+                <th>Аудитория</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${scheduleList}">
+                <td th:text="${item.id}"></td>
+                <!-- Используем #temporals.format вместо #dates.format -->
+                <td th:text="${#temporals.format(item.datetime, 'dd.MM.yyyy, HH:mm')}"></td>
+                <td th:text="${item.activityName}"></td>
+                <td th:text="${item.audienceName}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${scheduleList == null or #lists.isEmpty(scheduleList)}">
+        <div class="alert alert-info" role="alert">
+            Расписание отсутствует.
+        </div>
+    </div>
+</div>
+
+<!-- Подключение фрагмента подвала (footer) с новой синтаксической обёрткой -->
+<div th:replace="~{fragments/footer :: footerFragment}"></div>
+
+<!-- Bootstrap JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

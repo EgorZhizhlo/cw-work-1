@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${news.name}">Название новости</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Большое изображение с сохранением пропорций */
+        .news-img {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        /* Стилизация содержимого новости */
+        .news-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        /* Оформление карточки новости */
+        .news-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: #fff;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Вставка навигационной панели -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<div class="container my-5" style="min-height: 100vh">
+    <!-- Карточка новости -->
+    <div class="news-card">
+        <!-- Изображение новости -->
+        <div class="mb-4">
+            <img th:src="@{/news/image/{id}(id=${news.id})}" class="img-fluid news-img" alt="Изображение новости">
+        </div>
+        <!-- Заголовок новости -->
+        <h1 class="display-5 mb-3" th:text="${news.name}">Название новости</h1>
+        <!-- Дата публикации -->
+        <p class="text-muted mb-4" th:text="${#temporals.format(news.publicationDate, 'dd.MM.yyyy HH:mm')}">Дата публикации</p>
+        <hr>
+        <!-- Содержимое новости -->
+        <div class="news-content mb-5" th:utext="${news.additionalInfo}">
+            Содержимое новости
+        </div>
+        <!-- Панель управления новостью -->
+        <div class="d-flex justify-content-between">
+            <div>
+                <button class="btn btn-outline-primary me-2" type="button" onclick="window.location.href='/'">
+                    Вернуться на главную
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Вставка подвала -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

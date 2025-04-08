@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости спортивной школы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Большой слайдер новостей: изображение занимает 60vh */
+        .carousel-item img {
+            height: 50vh;
+            object-fit: cover;
+            width: 100%;
+        }
+        /* Подложка для текста в слайдере */
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        /* Раздел "Об организации" */
+        .about-section {
+            background-color: #f8f9fa;
+            padding: 3rem 0;
+        }
+        .about-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+        }
+        /* Раздел "Контакты" */
+        .contact-section {
+            padding: 3rem 0;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        /* Кнопка "Наверх" */
+        #backToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 1050;
+        }
+        .carousel-control-prev-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradPrev' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='10,2%206,8%2010,14' fill='none' stroke='url(%23gradPrev)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .carousel-control-next-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradNext' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='6,2%2010,8%206,14' fill='none' stroke='url(%23gradNext)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body style="min-height: 100vh">
+<!-- Навигационная панель (фрагмент) -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<!-- Слайдер новостей -->
+<div class="container my-5">
+    <h1 class="text-center mb-4">Новости</h1>
+    <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Итерируемся по коллекции sliderNews -->
+            <div th:each="news, iterStat : ${sliderNews}"
+                 th:classappend="${iterStat.index == 0} ? ' active' : ''"
+                 class="carousel-item"
+                 th:onclick="|window.location.href='/news/' + ${news.id}|">
+                <img th:src="@{/news/image/{id}(id=${news.id})}" class="d-block" alt="Изображение новости">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 th:text="${news.name}">Название новости</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Элементы управления слайдером -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Предыдущий</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Следующий</span>
+        </button>
+    </div>
+</div>
+
+<!-- Раздел "Об организации" -->
+<div class="about-section">
+    <div class="container">
+        <h2 class="text-center mb-4">Об организации</h2>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img th:src="@{/sportschoolLogo.png}" alt="О нашей организации" class="about-img">
+            </div>
+            <div class="col-md-6">
+                <p class="lead">
+                    Наша спортивная школа – это место, где профессионализм и страсть к спорту объединяются для достижения выдающихся результатов.
+                </p>
+                <p>
+                    За годы работы мы подготовили сотни спортсменов, участвующих в национальных и международных соревнованиях. Наши тренеры — это специалисты высочайшей квалификации, которые не только обучают технике, но и вдохновляют на новые достижения.
+                </p>
+                <p>
+                    Мы применяем современные методики тренировок, постоянно совершенствуем оборудование и развиваем инфраструктуру, чтобы обеспечить нашим ученикам лучшие условия для роста и развития.
+                </p>
+                <p>
+                    Кроме спортивных достижений, мы уделяем большое внимание воспитанию здорового образа жизни, формированию командного духа и личной ответственности. Наша миссия — помогать каждому раскрыть свой потенциал и идти к победе.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Раздел "Контакты" -->
+<div class="contact-section">
+    <div class="container">
+        <h2 class="text-center mb-4">Контакты</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Контактная информация -->
+                <div class="contact-info mb-4">
+                    <h5>Наш адрес</h5>
+                    <p>г. Москва, ул. Примерная, д. 1</p>
+                </div>
+                <div class="contact-info mb-4">
+                    <h5>Телефон</h5>
+                    <p>+7 (495) 123-45-67</p>
+                </div>
+                <div class="contact-info mb-4">
+                    <h5>Email</h5>
+                    <p>info@sportschool.ru</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Кнопка "Наверх" -->
+<button id="backToTop" class="btn btn-primary">Наверх</button>
+
+<!-- Футер (фрагмент) -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Показ кнопки "Наверх" при скролле страницы
+    window.onscroll = function() {
+        const btn = document.getElementById("backToTop");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
+    };
+    // Обработчик для кнопки "Наверх"
+    document.getElementById("backToTop").addEventListener("click", function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши услуги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .activity-card {
+            background: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .activity-img {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .activity-info {
+            padding: 1rem;
+        }
+        .activity-info h5 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #28a745;
+        }
+        .activity-info p {
+            margin: 0.25rem 0;
+            color: #555;
+        }
+        .carousel-inner {
+            padding: 1rem;
+        }
+        .carousel-control-prev-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradPrev' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='10,2%206,8%2010,14' fill='none' stroke='url(%23gradPrev)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .carousel-control-next-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3ClinearGradient id='gradNext' x1='0%' y1='0%' x2='100%' y2='0%'%3E%3Cstop offset='0%' style='stop-color:%23ff7e5f;stop-opacity:1'/%3E%3Cstop offset='100%' style='stop-color:%23feb47b;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolyline points='6,2%2010,8%206,14' fill='none' stroke='url(%23gradNext)' stroke-linecap='round' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+<!-- Фрагмент навигационной панели -->
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+
+<div class="container my-5" style="min-height: 100vh">
+    <h1 class="text-center section-title">Наши услуги</h1>
+
+    <!-- Итерация по группам активности по activityType -->
+    <div th:each="entry : ${groupedActivitiesChunks}" th:with="carouselId=${#strings.replace(entry.key, ' ', '-')}">
+        <h2 th:text="${entry.key}" class="mt-5 mb-3"></h2>
+        <div id="carousel-activity-[[${carouselId}]]" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Итерация по чанкам (по 2 карточки) -->
+                <div th:each="chunk, chunkStat : ${entry.value}"
+                     th:classappend="${chunkStat.index == 0} ? ' active' : ''"
+                     class="carousel-item">
+                    <div class="row">
+                        <div class="col-md-6" th:each="activity : ${chunk}">
+                            <div class="activity-card" th:onclick="|window.location.href='/activities/' + ${activity.id}|">
+                                <img th:src="@{'/activity/image/' + ${activity.id}}" alt="Фото услуги" class="activity-img">
+                                <div class="activity-info">
+                                    <h5 th:text="${activity.name}">Название</h5>
+                                    <p><strong>Цена за месяц:</strong> <span th:text="${activity.price}">Цена</span> руб.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-activity-[[${carouselId}]]" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Предыдущий</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-activity-[[${carouselId}]]" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Следующий</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Фрагмент подвала -->
+<div th:replace="fragments/footer :: footerFragment"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
