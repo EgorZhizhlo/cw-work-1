@@ -1,7 +1,10 @@
 package com.example.websportschool.controller;
 
 import com.example.websportschool.entity.NewsEntity;
+import com.example.websportschool.repository.ActivityEntityRepository;
+import com.example.websportschool.repository.AudienceEntityRepository;
 import com.example.websportschool.repository.NewsEntityRepository;
+import com.example.websportschool.repository.UserEntityRepository;
 import com.example.websportschool.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,6 +24,12 @@ import java.util.stream.Collectors;
 public class HomeController {
     @Autowired
     private NewsEntityRepository newsRepository;
+    @Autowired
+    private UserEntityRepository userRepository;
+    @Autowired
+    private ActivityEntityRepository activityRepository;
+    @Autowired
+    private AudienceEntityRepository audienceRepository;
 
     @GetMapping("/")
     public String homePage(@CookieValue(value = "authToken", required = false) String authToken, Model model) {
@@ -31,8 +40,20 @@ public class HomeController {
         List<NewsEntity> sliderNews = allNews.stream().limit(10).collect(Collectors.toList());
         model.addAttribute("sliderNews", sliderNews);
 
+        // Получаем статистику
+        Long employeeCount = userRepository.countByStatusName("EMPLOYEE");
+        Long studentCount  = userRepository.countByStatusName("USER");
+        Long activitiesCount = activityRepository.count();
+        Long audienceCount = audienceRepository.count();
+
+        model.addAttribute("employeeCount", employeeCount);
+        model.addAttribute("studentCount", studentCount);
+        model.addAttribute("activitiesCount", activitiesCount);
+        model.addAttribute("audienceCount", audienceCount);
+
         return "index";
     }
+
 
     @GetMapping("/about")
     public String aboutPage(@CookieValue(value = "authToken", required = false) String authToken, Model model) {

@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
     List<UserEntity> findByStatusName(String statusName);
+
+    Long countByStatusName(String employee);
 }
