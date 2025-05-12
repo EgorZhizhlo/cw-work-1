@@ -3,6 +3,8 @@ package com.example.websportschool.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -48,4 +50,12 @@ public class UserEntity {
 
     @Column(columnDefinition = "text")
     private String additionalInfo;
+
+    // Занятия, которые ведёт этот пользователь (если он тренер)
+    @OneToMany(mappedBy = "trainer")
+    private List<ScheduleEntity> schedulesTaught;
+
+    // Занятия, на которые записан этот пользователь (как студент)
+    @OneToMany(mappedBy = "student")
+    private List<StudentScheduleEntity> schedulesAttended;
 }

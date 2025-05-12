@@ -22,10 +22,14 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <!-- Если пользователь авторизован, показываем кнопку "Личный кабинет" -->
+                    <!-- Если пользователь авторизован, показываем "Личный кабинет" и "Выход" -->
                     <li class="nav-item" th:if="${isAuthenticated}">
                         <a class="nav-link" href="/account">Личный кабинет</a>
                     </li>
+                    <li class="nav-item" th:if="${isAuthenticated}">
+                        <a class="nav-link" href="/logout">Выход</a>
+                    </li>
+
                     <!-- Если не авторизован, показываем кнопки "Вход" и "Регистрация" -->
                     <li class="nav-item" th:if="${!isAuthenticated}">
                         <a class="nav-link" href="/login">Вход</a>

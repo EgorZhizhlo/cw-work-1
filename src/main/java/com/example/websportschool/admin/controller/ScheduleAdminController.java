@@ -1,10 +1,11 @@
 package com.example.websportschool.admin.controller;
 
 import com.example.websportschool.entity.ScheduleEntity;
-import com.example.websportschool.repository.ScheduleEntityRepository;
-import com.example.websportschool.repository.UserEntityRepository;
+import com.example.websportschool.entity.UserEntity;
 import com.example.websportschool.repository.ActivityEntityRepository;
 import com.example.websportschool.repository.AudienceEntityRepository;
+import com.example.websportschool.repository.ScheduleEntityRepository;
+import com.example.websportschool.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ public class ScheduleAdminController {
     private ScheduleEntityRepository scheduleRepository;
 
     @Autowired
-    private UserEntityRepository userRepository;
+    private UserEntityRepository trainerRepository;  // репозиторий пользователей
 
     @Autowired
     private ActivityEntityRepository activityRepository;
@@ -30,28 +31,34 @@ public class ScheduleAdminController {
     @Autowired
     private AudienceEntityRepository audienceRepository;
 
-    @GetMapping()
+    // Показ списка расписаний
+    @GetMapping
     public String listSchedules(Model model) {
         List<ScheduleEntity> schedules = scheduleRepository.findAll(Sort.by("id"));
         model.addAttribute("schedules", schedules);
         return "admin/schedules/list";
     }
 
+    // Форма создания нового занятия
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("schedule", new ScheduleEntity());
-        model.addAttribute("users", userRepository.findAll());
+        // тренеры — только сотрудники с ролью EMPLOYEE
+        List<UserEntity> trainers = trainerRepository.findByStatusName("EMPLOYEE");
+        model.addAttribute("trainers", trainers);
         model.addAttribute("activities", activityRepository.findAll());
         model.addAttribute("audiences", audienceRepository.findAll());
         return "admin/schedules/form";
     }
 
+    // Форма редактирования занятия
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<ScheduleEntity> scheduleOpt = scheduleRepository.findById(id);
         if (scheduleOpt.isPresent()) {
             model.addAttribute("schedule", scheduleOpt.get());
-            model.addAttribute("users", userRepository.findAll());
+            List<UserEntity> trainers = trainerRepository.findByStatusName("EMPLOYEE");
+            model.addAttribute("trainers", trainers);
             model.addAttribute("activities", activityRepository.findAll());
             model.addAttribute("audiences", audienceRepository.findAll());
             return "admin/schedules/form";
@@ -59,26 +66,29 @@ public class ScheduleAdminController {
         return "redirect:/admin/schedules";
     }
 
+    // Создание нового занятия
     @PostMapping("/create")
     public String createSchedule(@ModelAttribute("schedule") ScheduleEntity schedule) {
         scheduleRepository.save(schedule);
         return "redirect:/admin/schedules";
     }
 
+    // Обновление существующего занятия
     @PostMapping("/update")
     public String updateSchedule(@ModelAttribute("schedule") ScheduleEntity schedule) {
         Optional<ScheduleEntity> scheduleOpt = scheduleRepository.findById(schedule.getId());
         if (scheduleOpt.isPresent()) {
-            ScheduleEntity existingSchedule = scheduleOpt.get();
-            existingSchedule.setUser(schedule.getUser());
-            existingSchedule.setActivity(schedule.getActivity());
-            existingSchedule.setAudience(schedule.getAudience());
-            existingSchedule.setDatetime(schedule.getDatetime());
-            scheduleRepository.save(existingSchedule);
+            ScheduleEntity existing = scheduleOpt.get();
+            existing.setTrainer(schedule.getTrainer());
+            existing.setActivity(schedule.getActivity());
+            existing.setAudience(schedule.getAudience());
+            existing.setDatetime(schedule.getDatetime());
+            scheduleRepository.save(existing);
         }
         return "redirect:/admin/schedules";
     }
 
+    // Удаление занятия
     @GetMapping("/delete/{id}")
     public String deleteSchedule(@PathVariable("id") Long id) {
         scheduleRepository.deleteById(id);

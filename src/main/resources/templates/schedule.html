@@ -23,15 +23,22 @@
                 <th>Дата и время</th>
                 <th>Активность</th>
                 <th>Аудитория</th>
+                <th>Тренер</th>            <!-- новый столбец -->
+                <th>Участники</th>         <!-- новый столбец -->
             </tr>
             </thead>
             <tbody>
             <tr th:each="item : ${scheduleList}">
                 <td th:text="${item.id}"></td>
-                <!-- Используем #temporals.format вместо #dates.format -->
                 <td th:text="${#temporals.format(item.datetime, 'dd.MM.yyyy, HH:mm')}"></td>
                 <td th:text="${item.activityName}"></td>
                 <td th:text="${item.audienceName}"></td>
+                <td th:text="${item.trainerName}"></td> <!-- выводим тренера -->
+                <td>
+                    <ul class="list-unstyled mb-0">
+                        <li th:each="name : ${item.studentNames}" th:text="${name}"></li>
+                    </ul>
+                </td>
             </tr>
             </tbody>
         </table>

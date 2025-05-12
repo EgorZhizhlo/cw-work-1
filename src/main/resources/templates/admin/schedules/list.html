@@ -13,7 +13,7 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Пользователь</th>
+            <th>Тренер</th>
             <th>Активность</th>
             <th>Аудитория</th>
             <th>Дата и время</th>
@@ -23,11 +23,10 @@
         <tbody>
         <tr th:each="schedule : ${schedules}">
             <td th:text="${schedule.id}">1</td>
-            <td th:text="${schedule.user.name}">Имя</td>
+            <td th:text="${schedule.trainer.surname + ' ' + schedule.trainer.name}">ФИО тренера</td>
             <td th:text="${schedule.activity.name}">Активность</td>
             <td th:text="${schedule.audience != null ? schedule.audience.name : 'N/A'}">Аудитория</td>
             <td th:text="${#temporals.format(schedule.datetime, 'dd-MM-yyyy HH:mm')}">Дата и время</td>
-
             <td>
                 <a th:href="@{'/admin/schedules/edit/' + ${schedule.id}}" class="btn btn-sm btn-warning">Редактировать</a>
                 <a th:href="@{'/admin/schedules/delete/' + ${schedule.id}}" class="btn btn-sm btn-danger">Удалить</a>

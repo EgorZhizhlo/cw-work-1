@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали занятия</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Навигация -->
+<div th:replace="~{fragments/navbar :: navbarFragment}"></div>
+
+<div class="container mt-4">
+    <h1>Занятие: <span th:text="${schedule.activityName}"></span></h1>
+    <dl class="row">
+        <dt class="col-sm-3">Дата и время</dt>
+        <dd class="col-sm-9"
+            th:text="${#temporals.format(schedule.datetime,'dd.MM.yyyy HH:mm')}">
+        </dd>
+
+        <dt class="col-sm-3">Тренер</dt>
+        <dd class="col-sm-9" th:text="${schedule.trainerName}"></dd>
+
+        <dt class="col-sm-3">Аудитория</dt>
+        <dd class="col-sm-9"
+            th:text="${schedule.audienceName != null} ? schedule.audienceName : '—'">
+        </dd>
+    </dl>
+
+    <div class="mt-4" th:if="${isAuthenticated}">
+        <div th:if="${!isSignedUp}">
+            <form th:action="@{'/schedule/' + ${schedule.id} + '/signup'}" method="post">
+                <button class="btn btn-primary">Записаться</button>
+            </form>
+        </div>
+        <div th:if="${isSignedUp}">
+            <form th:action="@{'/schedule/' + ${schedule.id} + '/cancel'}" method="post">
+                <button class="btn btn-warning">Отменить запись</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4" th:if="${!isAuthenticated}">
+        <p class="text-danger">
+            Для записи на занятие необходимо
+            <a th:href="@{/login}">войти в систему</a>.
+        </p>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

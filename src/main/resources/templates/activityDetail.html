@@ -29,29 +29,62 @@
             color: #555;
             margin-bottom: 0.5rem;
         }
+        .detail-actions {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
     </style>
 </head>
 <body>
-<!-- Фрагмент навигационной панели -->
+<!-- Навигация -->
 <div th:replace="fragments/navbar :: navbarFragment"></div>
 
 <div class="container my-5" style="min-height: 100vh">
     <div class="activity-detail-card">
-        <img th:src="@{'/activity/image/' + ${activity.id}}" alt="Фото услуги" class="activity-detail-img mb-4">
+        <img th:src="@{'/activity/image/' + ${activity.id}}"
+             alt="Фото услуги"
+             class="activity-detail-img mb-4">
+
         <div class="activity-detail-info">
             <h1 th:text="${activity.name}">Название услуги</h1>
-            <p><strong>Цена за месяц:</strong> <span th:text="${activity.price}">Цена</span> руб.</p>
-            <p><strong>Размер группы:</strong> <span th:text="${activity.maxPeople}">Количество</span> учеников</p>
+            <p><strong>Цена за месяц:</strong>
+                <span th:text="${activity.price}">Цена</span> руб.
+            </p>
+            <p><strong>Размер группы:</strong>
+                <span th:text="${activity.maxPeople}">Количество</span> учеников
+            </p>
             <hr>
             <p th:text="${activity.additionalInfo}">Дополнительная информация</p>
         </div>
-        <a href="/activities" class="btn btn-secondary mt-3">Вернуться к услугам</a>
+
+        <!-- Кнопки Записаться / Отменить запись -->
+        <div class="detail-actions" th:if="${isAuthenticated}">
+            <div th:if="${!isSignedUp}">
+                <form th:action="@{/schedule/{id}/signup(id=${activity.id})}" method="post">
+                    <button class="btn btn-primary">Записаться</button>
+                </form>
+            </div>
+            <div th:if="${isSignedUp}">
+                <form th:action="@{/schedule/{id}/cancel(id=${activity.id})}" method="post">
+                    <button class="btn btn-warning">Отменить запись</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Если не авторизован, предлагаем войти -->
+        <div class="detail-actions" th:if="${!isAuthenticated}">
+            <a th:href="@{/login}" class="btn btn-outline-secondary">Войти, чтобы записаться</a>
+        </div>
+
+        <!-- Ссылка назад -->
+        <div class="detail-actions">
+            <a th:href="@{/activities}" class="btn btn-secondary mt-3">Вернуться к услугам</a>
+        </div>
     </div>
 </div>
 
-<!-- Фрагмент подвала -->
+<!-- Футер -->
 <div th:replace="fragments/footer :: footerFragment"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

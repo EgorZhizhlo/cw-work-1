@@ -22,7 +22,7 @@ public class ActivityService {
     public Map<String, List<ActivityEntity>> getActivitiesGroupedByType() {
         List<ActivityEntity> activities = activityRepository.findAll();
         return activities.stream()
-                .collect(Collectors.groupingBy(a -> a.getActivityType() != null ? a.getActivityType() : "Не указано"));
+                .collect(Collectors.groupingBy(a -> a.getActivityType() != null ? a.getActivityType() : "Общее"));
     }
 
     // Деление списка активности на чанки по 2 элемента

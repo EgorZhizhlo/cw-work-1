@@ -18,7 +18,9 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
     private AccountService accountService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler
+    ) throws Exception {
         String authToken = null;
         // Извлекаем cookie "authToken"
         Cookie[] cookies = request.getCookies();

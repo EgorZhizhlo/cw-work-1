@@ -8,39 +8,49 @@
 <body>
 <div class="container mt-4">
     <h1 th:text="${schedule.id == null} ? 'Создать пункт расписания' : 'Редактировать пункт расписания'">Форма расписания</h1>
-    <form th:action="@{${schedule.id == null ? '/admin/schedules/create' : '/admin/schedules/update'}}"
+    <form th:action="@{${schedule.id == null} ? '/admin/schedules/create' : '/admin/schedules/update'}"
           th:object="${schedule}"
           method="post">
         <input type="hidden" th:field="*{id}" />
+
         <div class="mb-3">
-            <label for="user" class="form-label">Пользователь</label>
-            <select class="form-select" id="user" th:field="*{user}" required>
-                <option th:each="user : ${users}"
-                        th:value="${user.id}"
-                        th:text="${user.name + ' ' + user.surname}">
+            <label for="trainer" class="form-label">Тренер</label>
+            <select class="form-select" id="trainer" th:field="*{trainer.id}" required>
+                <option th:each="tr : ${trainers}"
+                        th:value="${tr.id}"
+                        th:text="${tr.surname + ' ' + tr.name}">
                 </option>
             </select>
         </div>
+
         <div class="mb-3">
             <label for="activity" class="form-label">Активность</label>
-            <select class="form-select" id="activity" th:field="*{activity}" required>
+            <select class="form-select" id="activity" th:field="*{activity.id}" required>
                 <option th:each="activity : ${activities}"
                         th:value="${activity.id}"
-                        th:text="${activity.name}"></option>
+                        th:text="${activity.name}">
+                </option>
             </select>
         </div>
+
         <div class="mb-3">
             <label for="audience" class="form-label">Аудитория</label>
-            <select class="form-select" id="audience" th:field="*{audience}">
+            <select class="form-select" id="audience" th:field="*{audience.id}">
                 <option th:each="audience : ${audiences}"
                         th:value="${audience.id}"
-                        th:text="${audience.name}"></option>
+                        th:text="${audience.name}">
+                </option>
             </select>
         </div>
+
         <div class="mb-3">
             <label for="datetime" class="form-label">Дата и время</label>
-            <input type="datetime-local" class="form-control" id="datetime" th:field="*{datetime}" th:value="*{datetime}">
+            <input type="datetime-local"
+                   class="form-control"
+                   id="datetime"
+                   th:field="*{datetime}" />
         </div>
+
         <button type="submit" class="btn btn-success">Сохранить</button>
         <a th:href="@{/admin/schedules}" class="btn btn-secondary">Отмена</a>
     </form>

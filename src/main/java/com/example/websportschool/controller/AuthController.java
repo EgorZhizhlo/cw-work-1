@@ -78,4 +78,17 @@ public class AuthController {
 
         return "redirect:/"; // редирект на главную страницу
     }
+
+    // Обработка выхода (logout)
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        // Удаляем cookie authToken
+        Cookie cookie = new Cookie("authToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // удаляется сразу
+        response.addCookie(cookie);
+
+        return "redirect:/login"; // редирект на страницу логина
+    }
 }
