@@ -27,15 +27,17 @@
     </dl>
 
     <div class="mt-4" th:if="${isAuthenticated}">
-        <div th:if="${!isSignedUp}">
-            <form th:action="@{'/schedule/' + ${schedule.id} + '/signup'}" method="post">
-                <button class="btn btn-primary">Записаться</button>
-            </form>
-        </div>
-        <div th:if="${isSignedUp}">
-            <form th:action="@{'/schedule/' + ${schedule.id} + '/cancel'}" method="post">
-                <button class="btn btn-warning">Отменить запись</button>
-            </form>
+        <div class="detail-actions" th:if="${canSignUp}">
+            <div th:if="${!isSignedUp}">
+                <form th:action="@{'/schedule/' + ${schedule.id} + '/signup'}" method="post">
+                    <button class="btn btn-primary">Записаться</button>
+                </form>
+            </div>
+            <div th:if="${isSignedUp}">
+                <form th:action="@{'/schedule/' + ${schedule.id} + '/cancel'}" method="post">
+                    <button class="btn btn-warning">Отменить запись</button>
+                </form>
+            </div>
         </div>
     </div>
 

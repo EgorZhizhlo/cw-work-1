@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/schedule")
 public class ScheduleController {
@@ -32,63 +30,92 @@ public class ScheduleController {
                        @CookieValue(value = "authToken", required = false) String token) {
         boolean isAuth = token != null && JwtUtil.validateToken(token);
         model.addAttribute("isAuthenticated", isAuth);
-        if (!isAuth) return "error/403";
+        if (!isAuth) {
+            return "error/403";
+        }
 
         UserEntity user = accountService.getUserById(
                 JwtUtil.getUserIdFromToken(token)
         );
-        model.addAttribute("role", user.getStatusName());
-        if ("trainer".equalsIgnoreCase(user.getStatusName())) {
+        String role = user.getStatusName().toUpperCase();
+        model.addAttribute("role", role);
+
+        if ("EMPLOYEE".equals(role)) {
+            // тренер видит только свои занятия
             model.addAttribute("scheduleList",
                     scheduleService.getScheduleForTrainer(user));
         } else {
+            // студент – свои записи (ADMIN здесь тоже попадёт, но у него их не будет)
             model.addAttribute("scheduleList",
                     scheduleService.getScheduleForStudent(user));
         }
+
         return "schedule";
     }
 
-    /** Детальная страница занятия с кнопкой «Записаться»/«Отменить» */
+    /** Детальная страница занятия */
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
                          @CookieValue(value = "authToken", required = false) String token) {
         boolean isAuth = token != null && JwtUtil.validateToken(token);
         model.addAttribute("isAuthenticated", isAuth);
-        if (!isAuth) return "error/403";
+        if (!isAuth) {
+            return "error/403";
+        }
 
         UserEntity user = accountService.getUserById(
                 JwtUtil.getUserIdFromToken(token)
         );
-        ScheduleDTO dto = scheduleService.getScheduleDtoById(id);
-        boolean signed = scheduleService
-                .getScheduleForStudent(user)
-                .stream().anyMatch(s -> s.getId().equals(id));
+        String role = user.getStatusName().toUpperCase();
+        model.addAttribute("role", role);
 
+        // запрещаем запись/отмену для EMPLOYEE и ADMIN
+        boolean isPrivileged = "EMPLOYEE".equals(role) || "ADMIN".equals(role);
+        model.addAttribute("canSignUp", !isPrivileged);
+
+        // DTO занятия
+        ScheduleDTO dto = scheduleService.getScheduleDtoById(id);
         model.addAttribute("schedule", dto);
-        model.addAttribute("isSignedUp", signed);
+
+        // проверяем, записан ли студент (только если ему можно)
+        boolean isSignedUp = false;
+        if (!isPrivileged) {
+            isSignedUp = scheduleService
+                    .getScheduleForStudent(user)
+                    .stream()
+                    .anyMatch(s -> s.getId().equals(id));
+        }
+        model.addAttribute("isSignedUp", isSignedUp);
+
         return "scheduleDetail";
     }
 
-    /** Обработка записи на занятие */
+    /** Обработка записи на занятие (только для не-EMPLOYEE и не-ADMIN) */
     @PostMapping("/{id}/signup")
     public String signUp(@PathVariable Long id,
                          @CookieValue("authToken") String token) {
         UserEntity user = accountService.getUserById(
                 JwtUtil.getUserIdFromToken(token)
         );
-        scheduleService.signUp(id, user);
+        String role = user.getStatusName().toUpperCase();
+        if (!"EMPLOYEE".equals(role) && !"ADMIN".equals(role)) {
+            scheduleService.signUp(id, user);
+        }
         return "redirect:/schedule/" + id;
     }
 
-    /** Обработка отмены записи */
+    /** Обработка отмены записи (только для не-EMPLOYEE и не-ADMIN) */
     @PostMapping("/{id}/cancel")
     public String cancel(@PathVariable Long id,
                          @CookieValue("authToken") String token) {
         UserEntity user = accountService.getUserById(
                 JwtUtil.getUserIdFromToken(token)
         );
-        scheduleService.cancelSignUp(id, user);
+        String role = user.getStatusName().toUpperCase();
+        if (!"EMPLOYEE".equals(role) && !"ADMIN".equals(role)) {
+            scheduleService.cancelSignUp(id, user);
+        }
         return "redirect:/schedule/" + id;
     }
 }
